@@ -8,8 +8,7 @@
   <script>
     window.onload = function() {
       var container = document.getElementById('container');
-      container.textContent = generateRandomString(0, 2); // Generate 0 to 2 random characters initially
-      
+      container.textContent = generateRandomString(0, 2); 
       window.addEventListener("keyup", function(e) {
         var str = container.textContent;
         if (e.key === str.charAt(0)) { 
