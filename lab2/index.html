@@ -1,33 +1,36 @@
+
 <head> 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
- 
 </head>
 <body>
-  <div id="container" tabindex="0" class="blockquote text-nowrap"></div>
-
-  <script>
-    window.onload = function() {
-      var container = document.getElementById('container');
-      container.textContent = generateRandomString(0, 2); 
-      window.addEventListener("keyup", function(e) {
-        var str = container.textContent;
-        if (e.key === str.charAt(0)) { 
-          container.textContent = str.substring(1); 
-        } else {
-          container.textContent += generateRandomString(1, 3); 
+ <div id="container" tabindex="0" class="blockquote text-nowrap"></div> 
+<script>
+  window.addEventListener("keyup", function(e) {
+    console.log(e.key);
+    if (e.key) {
+        if (container.textContent.charAt(0) === e.key) {
+            container.textContent = container.textContent.substring(1);
         }
-      });
+    }
+    add_new_chars();
+});
 
-      function generateRandomString(minLength, maxLength) {
+function add_new_chars() {
+    var container = document.getElementById("container");
+
+    var generateRandomChars = function(minLength, maxLength) {
         var length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-        var result = '';
-        var characters = 'abcdefghijklmnopqrstuvwxyz';
+        var chars = "";
+        var possible = "abcdefghijklmnopqrstuvwxyz";
         for (var i = 0; i < length; i++) {
-          result += characters.charAt(Math.floor(Math.random() * characters.length));
+            chars += possible.charAt(Math.floor(Math.random() * possible.length));
         }
-        return result;
-      }
+        return chars;
     };
-  </script>
+
+    var randomChars = generateRandomChars(1, 3);
+    container.textContent += randomChars;
+}
+
+</script>
 </body>
-</html>
