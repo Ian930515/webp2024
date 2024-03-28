@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>景點觀光展覽資訊</title>
+<style>
+  /* 自定義表格樣式 */
+  table {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  td, th {
+    border: 1px solid #ddd; /* 添加单元格的边框样式 */
+    padding: 8px;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  tr:hover {
+    background-color: #ddd;
+  }
+  th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+  }
+</style>
+</head>
+<body>
+<h1>景點觀光展覽資訊</h1>
+<label for="keyword">關鍵字：</label>
+<input type="text" id="keyword">
+<button onclick="searchData()">搜索</button>
+<table id="csie">
+  <thead>
+    <tr> 
+      <th>名稱</th>
+      <th>地點</th> 
+      <th>票價</th>  
+    </tr>  
+  </thead>
+  <tbody></tbody>
+</table>
+<button onclick="addNewData()">加載資料</button>
+<button onclick="prevPage()">上一頁</button>
+<button onclick="nextPage()">下一頁</button>
+<div id="pagination-controls"></div>
+
+<script>
+var openUrl =
+  "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6";
+var xhr = new XMLHttpRequest();
+xhr.open("GET", openUrl, true);
+xhr.send();
+xhr.onreadystatechange = function () {
+  if (this.readyState == 4 && this.status == 200) {
+    dataset = JSON.parse(this.responseText);
+    addNewData(dataset, currentPage);
+  }
+};
+
+var currentPage = 1;
+var recordsPerPage = 10; // 每頁顯示的資料數
+var currentData = []; // 当前显示的数据
+
+function addNewData(data) {
+  var myTable = document.getElementById("csie").getElementsByTagName('tbody')[0];
+  myTable.innerHTML = ""; // 清空表格
+
+  var startIndex = (currentPage - 1) * recordsPerPage;
+  var endIndex = Math.min(startIndex + recordsPerPage, data.length);
+
+  for (var i = startIndex; i < endIndex; i++) {
+    var row = myTable.insertRow(-1);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    cell1.innerHTML = data[i]["title"];
+    cell2.innerHTML = data[i]["showInfo"][0]["location"];
+    cell3.innerHTML = data[i]["showInfo"][0]["price"];
+  }
+
+  currentData = data;
+
+  // 顯示分頁控制按鈕
+  showPaginationControls(data.length);
+}
+
+function showPaginationControls(totalRecords) {
+  var totalPages = Math.ceil(totalRecords / recordsPerPage);
+
+  var paginationControls = document.getElementById("pagination-controls");
+  paginationControls.innerHTML = "";
+
+  var currentPageText = document.createElement("span");
+  currentPageText.innerText = "第 " + currentPage + " 頁 / 共 " + totalPages + " 頁";
+  paginationControls.appendChild(currentPageText);
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    addNewData(currentData);
+  }
+}
+
+function nextPage() {
+  if (currentPage < Math.ceil(currentData.length / recordsPerPage)) {
+    currentPage++;
+    addNewData(currentData);
+  }
+}
+
+function searchData() {
+  var keyword = document.getElementById("keyword").value.toLowerCase();
+  var filteredData = dataset.filter(function(item) {
+    return item.title.toLowerCase().includes(keyword) || 
+           item.showInfo[0].location.toLowerCase().includes(keyword) || 
+           item.showInfo[0].price.toLowerCase().includes(keyword);
+  });
+  currentPage = 1;
+  addNewData(filteredData);
+}
+</script>
+</body>
+</html>
