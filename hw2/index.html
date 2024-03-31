@@ -1,18 +1,16 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>景點觀光展覽資訊</title>
 <style>
-  /* 自定義表格樣式 */
   table {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
   }
   td, th {
-    border: 1px solid #ddd; /* 添加单元格的边框样式 */
+    border: 1px solid #ddd; 
     padding: 8px;
   }
   tr:nth-child(even) {
@@ -33,7 +31,7 @@
 <body>
 <h1>景點觀光展覽資訊</h1>
 <label for="keyword">關鍵字：</label>
-<input type="text" id="keyword">
+<input type="text" id="keyword" onkeydown="searchOnEnter(event)">
 <button onclick="searchData()">搜索</button>
 <table id="csie">
   <thead>
@@ -64,12 +62,12 @@ xhr.onreadystatechange = function () {
 };
 
 var currentPage = 1;
-var recordsPerPage = 10; // 每頁顯示的資料數
-var currentData = []; // 当前显示的数据
+var recordsPerPage = 10;
+var currentData = []; 
 
 function addNewData(data) {
   var myTable = document.getElementById("csie").getElementsByTagName('tbody')[0];
-  myTable.innerHTML = ""; // 清空表格
+  myTable.innerHTML = "";
 
   var startIndex = (currentPage - 1) * recordsPerPage;
   var endIndex = Math.min(startIndex + recordsPerPage, data.length);
@@ -86,7 +84,6 @@ function addNewData(data) {
 
   currentData = data;
 
-  // 顯示分頁控制按鈕
   showPaginationControls(data.length);
 }
 
@@ -124,6 +121,12 @@ function searchData() {
   });
   currentPage = 1;
   addNewData(filteredData);
+}
+
+function searchOnEnter(event) {
+  if (event.keyCode === 13) {
+    searchData();
+  }
 }
 </script>
 </body>
