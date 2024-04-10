@@ -1,0 +1,75 @@
+<html>
+<style>
+  .gallery {
+ --g: 6px; 
+
+ display: grid;
+ width: 1200px; 
+ aspect-ratio: 1;
+ grid: auto-flow 1fr/repeat(3,1fr);
+ gap: var(--g);
+}
+.gallery img {
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+ filter: grayscale();
+ cursor: pointer;
+ transition: .5s
+}
+.gallery img:hover {
+ filter: grayscale(0);
+}
+.gallery img:nth-child(2) {
+ grid-area: 1/2/span 2/span 2;
+ clip-path: polygon(0 0,100% 0,100% 100%,calc(50% + var(--g)/4) 100%,0 calc(50% - var(--g)/4))
+}
+.gallery img:nth-child(3) {
+ grid-area: 2/1/span 2/span 2;
+ clip-path: polygon(0 0,calc(50% - var(--g)/4) 0,100% calc(50% + var(--g)/4),100% 100%,0 100%);
+}
+</style>
+<body>
+ <button onclick="getimg()">Get IMG</
+button>
+ <div id='gallery' class="gallery"></
+div>
+ <script>
+  var imglist_Url = 'https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=ca370d51a054836007519a00ff4ce59e&per_page=10&format=json&nojsoncallback=1';
+
+function getimg(){
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', imglist_Url, true);
+  xhr.send();
+  xhr.onload = function(){
+    var data = JSON.parse(this.responseText);
+    add_new_img(data.photos.photo);
+  }
+}
+
+function add_new_img(dataset){
+  var gal = document.getElementById("gallery");
+  dataset.forEach(function(item){
+    var imgId = item.id;
+    var img_Url = 'https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=ca370d51a054836007519a00ff4ce59e&photo_id=' + imgId + '&format=json&nojsoncallback=1';
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', img_Url, true);
+    xhr.send();
+    xhr.onload = function(){
+      var imgData = JSON.parse(this.responseText);
+      var imgUrl = imgData.sizes.size[0].source; // Assuming you want the first available size
+      var img = document.createElement("img");
+      img.setAttribute("src", imgUrl);
+      gal.appendChild(img);
+    }
+  });
+}
+
+
+getimg();
+
+ </script>
+  
+</body>
+</html>
