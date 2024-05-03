@@ -57,9 +57,9 @@ const App = () => {
 
 
   const columns = [
-    { field: 'title', headerName: '名稱', width: 150 },
-    { field: 'location', headerName: '地點', width: 150 },
-    { field: 'price', headerName: '票價', width: 100 },
+    { field: 'title', headerName: '名稱', width: 300 },
+    { field: 'location', headerName: '地點', width: 300 },
+    { field: 'price', headerName: '票價', width: 300 },
   ];
 
   const rows = filteredData.map((item, index) => ({
